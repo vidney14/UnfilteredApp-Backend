@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const db = require('../config/db'); // knex instance
 require('dotenv').config();
 
-exports.registerUser = async (email, password) => {
+exports.registerUser = async (email, password, name) => {
   // Check if user exists
   const existingUser = await db('users').where({ email }).first();
   if (existingUser) {
@@ -16,8 +16,8 @@ exports.registerUser = async (email, password) => {
 
   // Insert user
   const [newUser] = await db('users')
-    .insert({ email, password_hash: passwordHash })
-    .returning(['id', 'email']);
+    .insert({ email, password_hash: passwordHash, name })
+    .returning(['id', 'email', 'name']);
 
   return { 
     message: "Registration successful. Please log in.",
@@ -39,7 +39,7 @@ exports.loginUser = async (email, password) => {
   }
 
   // Exclude password_hash to return just the user
-  const userData = { id: user.id, email: user.email };
+  const userData = { id: user.id, email: user.email, name: user.name };
   
   // Create JWT token
   const token = generateToken(userData);
@@ -50,7 +50,7 @@ exports.loginUser = async (email, password) => {
 exports.getUserById = async (id) => {
   const user = await db('users')
     .where({ id })
-    .select('id', 'email', 'created_at')
+    .select('id', 'email', 'name', 'created_at')
     .first();
 
   if (!user) {
@@ -66,6 +66,7 @@ function generateToken(user) {
     user: {
       id: user.id,
       email: user.email,
+      name: user.name
     },
   };
 

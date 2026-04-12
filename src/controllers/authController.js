@@ -2,15 +2,15 @@ const authManager = require('../managers/authManager');
 
 exports.register = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, name } = req.body;
     
     // Provide basic validation here
-    if (!email || !password) {
-      return res.status(400).json({ error: 'Please provide email and password' });
+    if (!email || !password || !name) {
+      return res.status(400).json({ error: 'Please provide email, password, and name' });
     }
 
     // Call the manager layer
-    const authData = await authManager.registerUser(email, password);
+    const authData = await authManager.registerUser(email, password, name);
     res.status(201).json(authData);
   } catch (err) {
     if (err.message === 'User already exists') {
