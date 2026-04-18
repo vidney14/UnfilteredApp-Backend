@@ -1,89 +1,110 @@
-# UnfilteredApp-Backend
+# Unfiltered API - Backend Service
 
-A robust Node.js, Express, and PostgreSQL backend for the Unfiltered application. This API supports user authentication, mood logging with analytics, journaling, and a real-time mood-based chat system.
-
-## Features
-
-- **Auth**: JWT-based authentication (Register/Login).
-- **Mood Logging**: Log daily moods and view analytics aggregated by type.
-- **Journaling**: Secure personal journal entries.
-- **Chat**: Real-time mood-based chat rooms using Socket.io.
-- **Database**: Managed with Knex.js migrations and seeds.
+A high-performance, secure Node.js backend designed for the **Unfiltered** ecosystem. This API manages user sanctuaries, mood-based analytics, secure journaling, and real-time community engagement.
 
 ---
 
-## Prerequisites
+## 🚀 Optimized for the Cloud
 
-- **Node.js** (v14 or higher recommended)
-- **PostgreSQL** (Active instance running locally or remotely)
-- **npm** or **yarn**
+This repository is pre-configured for seamless deployment using:
+- **Serverless Runtime**: Optimized for [Vercel](https://vercel.com).
+- **Cloud Database**: Built to work with [Neon.tech](https://neon.tech) (Serverless PostgreSQL).
+- **ORM**: Powered by **Knex.js** for elegant migrations and query building.
 
 ---
 
-## Setup Instructions
+## ✨ Core Features
 
-### 1. Clone & Install
+- 🔐 **Secure Authentication**: Robust JWT-based registration and login system with bcrypt hashing.
+- 📊 **Mood Intelligence**: Log daily emotional states and retrieve intelligent analytics aggregated by mood types.
+- 📓 **Private Journaling**: Encrypted-path journaling for personal reflection and emotional tracking.
+- 💬 **Community Sanctuaries**: Mood-based chat rooms for real-time connection (Socket.io supported for persistent hosts).
+- 🛠 **Developer First**: Fully equipped with database migrations, seeds, and comprehensive error handling.
+
+---
+
+## 🛠 Tech Stack
+
+| Technology | Purpose |
+| :--- | :--- |
+| **Node.js** | Core Runtime |
+| **Express.js** | Web Framework |
+| **PostgreSQL** | Primary Database |
+| **Knex.js** | Query Builder & Migrations |
+| **Socket.io** | Real-time Communication |
+| **JWT** | Secure Authentication |
+
+---
+
+## 📖 API Documentation
+
+### 🔓 Authentication
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/api/auth/register` | Register a new account (`name`, `email`, `password`) |
+| `POST` | `/api/auth/login` | Authenticate and retrieve JWT token |
+
+### 🌈 Mood & Analytics
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/api/mood/log` | Log an emotional entry (`modeType`, `modeSubType`) |
+| `GET` | `/api/mood/analytics` | Retrieve mood aggregation stats (Supports `?days=` param) |
+
+### 📝 Journal Entries
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/api/journals` | Create a detailed journal entry with mood tagging |
+| `GET` | `/api/journals` | Retrieve all journals for the authenticated user |
+| `POST` | `/api/journal/entries` | Legacy/Simplified entry creation |
+| `GET` | `/api/journal/entries` | Legacy/Simplified entry retrieval |
+
+### 🏠 Chat Sanctuaries
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/rooms` | List all available mood-based sanctuaries |
+| `GET` | `/api/rooms/:id/messages` | Retrieve message history for a specific sanctuary |
+
+---
+
+## ⚙️ Local Setup
+
+1. **Clone and Install**:
 ```bash
 git clone <repository-url>
-cd node-postgres-backend
 npm install
 ```
 
-### 2. Environment Variables
-Create a `.env` file in the root directory and configure the following:
+2. **Environment Configuration**:
+Create a `.env` file in the root:
 ```env
-PORT=3000
-DATABASE_URL=postgres://username:password@localhost:5432/database_name
-JWT_SECRET=your_jwt_secret_here
+PORT=5000
+DATABASE_URL=postgresql://user:pass@localhost:5432/unfiltered
+JWT_SECRET=your_secure_secret_key
+NODE_ENV=development
 ```
 
-### 3. Database Setup
-Ensure your PostgreSQL database exists, then run migrations and seeds:
+3. **Database Initialization**:
 ```bash
-# Run migrations to create tables
 npx knex migrate:latest
-
-# Seed the database with fixed chat rooms
 npx knex seed:run
 ```
 
 ---
 
-## Running the Application
+## 🌍 Cloud Deployment (Vercel + Neon)
 
-### Development Mode (with Nodemon)
+1. **Database**: Create a project on [Neon.tech](https://neon.tech) and copy your connection string.
+2. **Migration**: Run migrations against your Neon DB from your local terminal:
 ```bash
-npm run dev
+DATABASE_URL="your_neon_url" NODE_ENV=production npx knex migrate:latest
 ```
-
-### Production Mode
-```bash
-npm start
-```
-
-The server will be running at `http://localhost:3000`.
+3. **Vercel**: Import the repository, add the `DATABASE_URL` and `JWT_SECRET` to your project environment variables, and deploy.
 
 ---
 
-## API Summary
+## ⚡️ Real-time Support (Socket.io)
+The API includes an integrated Socket.io handler (`src/socket.js`). 
+> **Note**: Standard Vercel Serverless functions do not support persistent WebSockets. For full real-time capabilities, deploy this backend to a persistent host like **Render**, **Railway**, or **AWS EC2**.
 
-### Authentication
-- `POST /api/auth/register`: Create user (`email`, `password`, `name`).
-- `POST /api/auth/login`: Get JWT and user info.
-
-### Mood & Analytics
-- `POST /api/mood/log`: Save a mood entry (`modeType`, `modeSubType`).
-- `GET /api/mood/analytics`: Get aggregated stats (query param `days`).
-
-### Journaling
-- `POST /api/journal/entries`: Save text entry (`content`).
-- `GET /api/journal/entries`: Get all personal entries.
-
-### Chat Rooms
-- `GET /api/rooms`: List available mood rooms.
-- `GET /api/rooms/:id/messages`: Get message history for a specific room.
-
-### Real-time (Socket.io)
-- **Events**:
-  - `join_room`: Joins a room by ID.
-  - `send_message`: Broadcasts message to room members.
+---
+*Created with ❤️ by the Unfiltered Team*
