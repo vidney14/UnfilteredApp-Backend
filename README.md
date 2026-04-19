@@ -129,4 +129,3 @@ Render auto-deploys on every push to `main`. 🚀
 
 ---
 
-*Created with ❤️ by the Unfiltered Team*
