@@ -1,25 +1,16 @@
-# Unfiltered API - Backend Service
+# Unfiltered API — Backend Service
 
-A high-performance, secure Node.js backend designed for the **Unfiltered** ecosystem. This API manages user sanctuaries, mood-based analytics, secure journaling, and real-time community engagement.
-
----
-
-## 🚀 Optimized for the Cloud
-
-This repository is pre-configured for seamless deployment using:
-- **Serverless Runtime**: Optimized for [Vercel](https://vercel.com).
-- **Cloud Database**: Built to work with [Neon.tech](https://neon.tech) (Serverless PostgreSQL).
-- **ORM**: Powered by **Knex.js** for elegant migrations and query building.
+A high-performance, secure Node.js backend designed for the **Unfiltered** ecosystem. This API manages user sanctuaries, mood-based analytics, secure journaling, and real-time community engagement via WebSockets.
 
 ---
 
 ## ✨ Core Features
 
-- 🔐 **Secure Authentication**: Robust JWT-based registration and login system with bcrypt hashing.
-- 📊 **Mood Intelligence**: Log daily emotional states and retrieve intelligent analytics aggregated by mood types.
-- 📓 **Private Journaling**: Encrypted-path journaling for personal reflection and emotional tracking.
-- 💬 **Community Sanctuaries**: Mood-based chat rooms for real-time connection (Socket.io supported for persistent hosts).
-- 🛠 **Developer First**: Fully equipped with database migrations, seeds, and comprehensive error handling.
+- 🔐 **Secure Authentication** — JWT-based registration & login with bcrypt password hashing.
+- 📊 **Mood Intelligence** — Log daily emotional states and retrieve analytics aggregated by mood type.
+- 📓 **Private Journaling** — Personal journal entries with mood tagging.
+- 💬 **Real-time Sanctuaries** — Mood-based chat rooms powered by **Socket.io** with full WebSocket support.
+- 🛠 **Developer First** — Knex.js migrations, seeds, and comprehensive error handling.
 
 ---
 
@@ -29,40 +20,52 @@ This repository is pre-configured for seamless deployment using:
 | :--- | :--- |
 | **Node.js** | Core Runtime |
 | **Express.js** | Web Framework |
-| **PostgreSQL** | Primary Database |
+| **PostgreSQL** | Primary Database (Neon.tech) |
 | **Knex.js** | Query Builder & Migrations |
-| **Socket.io** | Real-time Communication |
+| **Socket.io** | Real-time WebSocket Communication |
 | **JWT** | Secure Authentication |
+| **bcrypt** | Password Hashing |
 
 ---
 
 ## 📖 API Documentation
 
+Base URL: `https://unfilteredapp-backend.onrender.com`
+
 ### 🔓 Authentication
-| Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| `POST` | `/api/auth/register` | Register a new account (`name`, `email`, `password`) |
-| `POST` | `/api/auth/login` | Authenticate and retrieve JWT token |
+| Method | Endpoint | Auth | Description |
+| :--- | :--- | :---: | :--- |
+| `POST` | `/api/auth/register` | ❌ | Register a new account (`name`, `email`, `password`) |
+| `POST` | `/api/auth/login` | ❌ | Authenticate and retrieve a JWT token |
+| `GET` | `/api/auth/profile` | ✅ | Get the authenticated user's profile |
 
 ### 🌈 Mood & Analytics
-| Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| `POST` | `/api/mood/log` | Log an emotional entry (`modeType`, `modeSubType`) |
-| `GET` | `/api/mood/analytics` | Retrieve mood aggregation stats (Supports `?days=` param) |
+| Method | Endpoint | Auth | Description |
+| :--- | :--- | :---: | :--- |
+| `POST` | `/api/mood/log` | ✅ | Log an emotional entry (`modeType`, `modeSubType`) |
+| `GET` | `/api/mood/analytics` | ✅ | Retrieve mood aggregation stats (supports `?days=` param) |
 
 ### 📝 Journal Entries
-| Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| `POST` | `/api/journals` | Create a detailed journal entry with mood tagging |
-| `GET` | `/api/journals` | Retrieve all journals for the authenticated user |
-| `POST` | `/api/journal/entries` | Legacy/Simplified entry creation |
-| `GET` | `/api/journal/entries` | Legacy/Simplified entry retrieval |
+| Method | Endpoint | Auth | Description |
+| :--- | :--- | :---: | :--- |
+| `POST` | `/api/journals` | ✅ | Create a detailed journal entry with mood tagging |
+| `GET` | `/api/journals` | ✅ | Retrieve all journals for the authenticated user |
+| `POST` | `/api/journal/entries` | ✅ | Simplified entry creation |
+| `GET` | `/api/journal/entries` | ✅ | Simplified entry retrieval |
 
 ### 🏠 Chat Sanctuaries
-| Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| `GET` | `/api/rooms` | List all available mood-based sanctuaries |
-| `GET` | `/api/rooms/:id/messages` | Retrieve message history for a specific sanctuary |
+| Method | Endpoint | Auth | Description |
+| :--- | :--- | :---: | :--- |
+| `GET` | `/api/rooms` | ✅ | List all available mood-based sanctuaries |
+| `GET` | `/api/rooms/:id/messages` | ✅ | Retrieve message history for a specific sanctuary |
+
+### ⚡ Real-time — Socket.io Events
+| Event | Direction | Payload | Description |
+| :--- | :--- | :--- | :--- |
+| `join_room` | Client → Server | `roomId` | Join a sanctuary chat room |
+| `send_message` | Client → Server | `{ roomId, userId, content }` | Send a message to a room |
+| `receive_message` | Server → Client | `{ id, roomId, userId, content, createdAt }` | Receive a broadcast message |
+| `disconnect` | Client → Server | — | Client leaves all rooms |
 
 ---
 
@@ -70,12 +73,12 @@ This repository is pre-configured for seamless deployment using:
 
 1. **Clone and Install**:
 ```bash
-git clone <repository-url>
+git clone https://github.com/vidney14/UnfilteredApp-Backend.git
+cd UnfilteredApp-Backend
 npm install
 ```
 
-2. **Environment Configuration**:
-Create a `.env` file in the root:
+2. **Environment Configuration** — create a `.env` file in the root:
 ```env
 PORT=5000
 DATABASE_URL=postgresql://user:pass@localhost:5432/unfiltered
@@ -89,22 +92,41 @@ npx knex migrate:latest
 npx knex seed:run
 ```
 
+4. **Run the dev server**:
+```bash
+npm run dev
+```
+
 ---
 
-## 🌍 Cloud Deployment (Vercel + Neon)
+## 🌍 Cloud Deployment (Render + Neon)
 
-1. **Database**: Create a project on [Neon.tech](https://neon.tech) and copy your connection string.
-2. **Migration**: Run migrations against your Neon DB from your local terminal:
+This backend is deployed as a **persistent Web Service on [Render](https://render.com)**, which provides full WebSocket support required by Socket.io.
+
+### Database (Neon.tech)
+1. Create a project on [Neon.tech](https://neon.tech) and copy your connection string.
+2. Run migrations against the production DB:
 ```bash
 DATABASE_URL="your_neon_url" NODE_ENV=production npx knex migrate:latest
 ```
-3. **Vercel**: Import the repository, add the `DATABASE_URL` and `JWT_SECRET` to your project environment variables, and deploy.
+
+### Render
+| Setting | Value |
+| :--- | :--- |
+| **Runtime** | Node |
+| **Build Command** | `npm install` |
+| **Start Command** | `node index.js` |
+| **Branch** | `main` |
+
+Add these environment variables in the Render dashboard:
+```
+DATABASE_URL=<your_neon_connection_string>
+JWT_SECRET=<your_secret>
+NODE_ENV=production
+```
+
+Render auto-deploys on every push to `main`. 🚀
 
 ---
 
-## ⚡️ Real-time Support (Socket.io)
-The API includes an integrated Socket.io handler (`src/socket.js`). 
-> **Note**: Standard Vercel Serverless functions do not support persistent WebSockets. For full real-time capabilities, deploy this backend to a persistent host like **Render**, **Railway**, or **AWS EC2**.
-
----
 *Created with ❤️ by the Unfiltered Team*
