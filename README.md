@@ -105,7 +105,7 @@ This backend is deployed as a **persistent Web Service on [Render](https://rende
 
 ### Database (Neon.tech)
 1. Create a project on [Neon.tech](https://neon.tech) and copy your connection string.
-2. Run migrations against the production DB:
+2. Run migrations against the production db:
 ```bash
 DATABASE_URL="your_neon_url" NODE_ENV=production npx knex migrate:latest
 ```
