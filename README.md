@@ -1,6 +1,6 @@
 # Unfiltered API — Backend Service
 
-A high-performance, secure Node.js backend designed for the **Unfiltered** ecosystem. This API manages user sanctuaries, mood-based analytics, secure journaling, and real-time community engagement via WebSockets.
+A high performance, secure Node.js backend designed for the **Unfiltered** ecosystem. This API manages user sanctuaries, mood-based analytics, secure journaling, and real-time community engagement via WebSockets.
 
 ---
 
